@@ -1,12 +1,17 @@
 import '../styles/globals.css'
 import type { AppProps } from 'next/app'
 import { SessionProvider } from 'next-auth/react'
+import { RequireLogin } from '../components/common/auth/RequireLogin'
 
 function MyApp({ Component, pageProps: { session, ...pageProps }}: AppProps) {
   return(
-    <SessionProvider session={pageProps.session}>
-      <Component {...pageProps} />
-    </SessionProvider>
+    <div>
+      <SessionProvider session={session}>
+        <RequireLogin />
+        <Component {...pageProps} />
+      </SessionProvider>
+    </div>
+    
   )
 }
 
