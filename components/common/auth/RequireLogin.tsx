@@ -2,22 +2,19 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
-interface Props {
-  children?: React.ReactNode
-}
-
-/**
- * ログインが必要なページ用のラッパーコンポーネント。
- */
-export const RequireLogin: React.VFC<Props> = ({ children }) => {
+export const RequireLogin: React.FC = ({}) => {
   const router = useRouter()
-  const { data:session, status } = useSession();
+  const notRequireLoginPaths = ["/","/login","/account/new"]
+  const { status } = useSession()
 
   useEffect(() => {
-    if (!session) router.push("/login");
-  }, [session])
+    // ログイン不要のURLでなく、認証がされていない場合はrootに飛ばす
+    if(notRequireLoginPaths.filter((path)=>{return path === router.pathname}).length === 0){
+      if (status === "unauthenticated") router.push("/");
+    }
+  }, [status])
 
   if (status == "loading") {return <div>Loading...</div>}
 
-  return <>{children}</>
+  return <></>
 }
